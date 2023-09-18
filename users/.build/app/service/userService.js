@@ -27,6 +27,7 @@ const Signup_1 = require("../models/dto/Signup");
 const Login_1 = require("../models/dto/Login");
 const errors_1 = require("../utility/errors");
 const password_1 = require("../utility/password");
+const notification_1 = require("../utility/notification");
 let UserService = class UserService {
     constructor(repository) {
         this.repository = repository;
@@ -80,7 +81,15 @@ let UserService = class UserService {
     }
     VerifyUser(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, reponse_1.SuccessResponse)({ message: "response from verify User" });
+            const token = event.headers.authorization;
+            const payload = yield (0, password_1.VerifyToken)(token);
+            console.log(payload);
+            if (payload) {
+                const { code, expiry } = (0, notification_1.GenerateAccessCode)();
+                console.log(code, expiry, payload.phone);
+                const reponse = yield (0, notification_1.SendVerificationCode)(code, payload.phone);
+            }
+            return (0, reponse_1.SuccessResponse)({ message: "Verification code is sent to your register" });
         });
     }
     //User profile

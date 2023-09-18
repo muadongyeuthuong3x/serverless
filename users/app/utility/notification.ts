@@ -1,8 +1,6 @@
-
-import  twilio  from 'twilio'
-
-const accountSid = ""
-const authToken = ""
+import twilio from 'twilio'
+const accountSid = "AC5f483b57daf618f21530bb072f4f9674"
+const authToken = "6d9331f6a92b1a5c183c5ea6a8131f7d"
 
 
 const client = twilio(accountSid , authToken)
@@ -16,7 +14,15 @@ export const GenerateAccessCode = () => {
 
 export const SendVerificationCode = async (
     code: number,
-    toPhoneNumber: number
+    toPhoneNumber: string
 ) => {
-   
+   const response = await client.messages
+   .create({
+      from: '+84346997607',
+      body: `Send code ${code}`,
+      to: toPhoneNumber.trim()
+    })
+    console.log(response)
+    return response;
 }
+

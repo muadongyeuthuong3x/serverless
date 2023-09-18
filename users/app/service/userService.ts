@@ -6,7 +6,8 @@ import { plainToClass } from 'class-transformer';
 import { SignupInput } from '../models/dto/Signup';
 import { LoginInput } from '../models/dto/Login';
 import { AppValidationError } from '../utility/errors';
-import { GetHashedPassword, GetSalt, GetToken, ValidatePassword } from '../utility/password'
+import { GetHashedPassword, GetSalt, GetToken, ValidatePassword, VerifyToken } from '../utility/password'
+import { GenerateAccessCode, SendVerificationCode } from '../utility/notification';
 
 
 @autoInjectable()
@@ -64,7 +65,16 @@ export class UserService {
     }
 
     async VerifyUser(event: APIGatewayProxyEventV2) {
-        return SuccessResponse({ message: "response from verify User" });
+        const token = event.headers.authorization;
+        
+        const payload = await VerifyToken(token);
+        console.log(payload)
+        if(payload){
+            const {code , expiry} = GenerateAccessCode();
+            console.log(code , expiry , payload.phone)
+            const reponse = await SendVerificationCode(code , payload.phone)
+        }
+        return SuccessResponse({ message: "Verification code is sent to your register" });
     }
 
     //User profile
