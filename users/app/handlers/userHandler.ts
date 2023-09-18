@@ -7,18 +7,18 @@ import jsonBodyParser from '@middy/http-json-body-parser'
 const service = container.resolve(UserService);
 
 
-export const Signup = middy ((event: APIGatewayProxyEventV2) => {
+export const Signup = middy((event: APIGatewayProxyEventV2) => {
     return service.CreateUser(event)
 }).use(jsonBodyParser())
 
 
-export const Login = async (event: APIGatewayProxyEventV2) => {
-    console.log(event.body)
+export const Login = middy ((event: APIGatewayProxyEventV2) => {
     return service.UserLogin(event)
-}
+}).use(jsonBodyParser())
 
 export const Verify = async (event: APIGatewayProxyEventV2) => {
     return service.VerifyUser(event);
+    
 }
 
 

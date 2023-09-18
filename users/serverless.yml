@@ -28,7 +28,7 @@ functions:
     events:
       - httpApi:
           path: /verify
-          method: post
+          method: get
   profile:
     handler: app/handler.Profile
     events:
