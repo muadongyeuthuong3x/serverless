@@ -4,7 +4,13 @@ start_db:
 stop_db:
 	@docker compose down
 
-server:
-	yarn run dev
+migrate:
+	@db-migrate up
 
-.PHONY: start_db stop_db server
+migrate-down:
+	@db-migrate down
+
+server:
+	@yarn run dev
+
+.PHONY: start_db stop_db server migrate migrate-down

@@ -4,5 +4,5 @@ export class UserModel{
    password : string;
    salt : string;
    userType : string;
-   user_id?: number;
+   user_id?: string;
 }

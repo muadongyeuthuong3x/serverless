@@ -64,7 +64,6 @@ let UserService = class UserService {
                 const error = yield (0, errors_1.AppValidationError)(input);
                 if (error)
                     return (0, reponse_1.ErrorResponse)(404, error);
-                console.log(input, input.email);
                 const data = yield this.repository.findAccountByEmail(input.email);
                 // check validator password 
                 const verify = yield (0, password_1.ValidatePassword)(input.password, data.password, data.salt);
@@ -73,6 +72,22 @@ let UserService = class UserService {
                 }
                 const token = (0, password_1.GetToken)(data);
                 return (0, reponse_1.SuccessResponse)({ token });
+            }
+            catch (error) {
+                return (0, reponse_1.ErrorResponse)(500, error);
+            }
+        });
+    }
+    GetVerificationToken(event) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const token = event.headers.authorization;
+                const payload = yield (0, password_1.VerifyToken)(token);
+                if (payload) {
+                    const { code, expiry } = (0, notification_1.GenerateAccessCode)();
+                    yield this.repository.updateVerificationCode(payload.user_id, code, expiry);
+                }
+                return (0, reponse_1.SuccessResponse)({ message: "Verification code is sent to your register" });
             }
             catch (error) {
                 return (0, reponse_1.ErrorResponse)(500, error);

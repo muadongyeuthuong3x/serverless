@@ -26,7 +26,16 @@ exports.Login = (0, core_1.default)((event) => {
     return service.UserLogin(event);
 }).use((0, http_json_body_parser_1.default)());
 const Verify = (event) => __awaiter(void 0, void 0, void 0, function* () {
-    return service.VerifyUser(event);
+    const httpMethod = event.requestContext.http.method.toLowerCase();
+    if (httpMethod === "post") {
+        return service.GetVerificationToken(event);
+    }
+    else if (httpMethod === "get") {
+        return service.VerifyUser(event);
+    }
+    else {
+        return (0, reponse_1.ErrorResponse)(404, "requested method");
+    }
 });
 exports.Verify = Verify;
 const Profile = (event) => __awaiter(void 0, void 0, void 0, function* () {

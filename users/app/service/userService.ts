@@ -47,7 +47,6 @@ export class UserService {
           
             const error = await AppValidationError(input)
             if (error) return ErrorResponse(404, error);
-            console.log(input , input.email)
             const data = await this.repository.findAccountByEmail(input.email);
 
             // check validator password 
@@ -59,6 +58,21 @@ export class UserService {
             const token = GetToken(data)
             
             return SuccessResponse({ token });
+        } catch (error) {
+            return ErrorResponse(500, error);
+        }
+    }
+
+
+    async GetVerificationToken(event: APIGatewayProxyEventV2) {
+        try {
+            const token = event.headers.authorization;
+            const payload = await VerifyToken(token);
+            if(payload){
+                const {code , expiry} = GenerateAccessCode()
+                await this.repository.updateVerificationCode(payload.user_id , code , expiry);
+            }
+            return SuccessResponse({ message: "Verification code is sent to your register" });
         } catch (error) {
             return ErrorResponse(500, error);
         }
