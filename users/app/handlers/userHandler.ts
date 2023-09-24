@@ -30,7 +30,7 @@ export const Verify = async (event: APIGatewayProxyEventV2) => {
 }
 
 
-export const Profile = async (event: APIGatewayProxyEventV2) => {
+export const Profile = middy((event: APIGatewayProxyEventV2) => {
     const httpMethod = event.requestContext.http.method.toLowerCase();
     if (httpMethod === "post") {
         return service.CreateProfile(event);
@@ -41,7 +41,7 @@ export const Profile = async (event: APIGatewayProxyEventV2) => {
     } else {
         return ErrorResponse(404, "requested method");
     }
-}
+}).use(jsonBodyParser())
 
 export const Cart = async (event: APIGatewayProxyEventV2) => {
     const httpMethod = event.requestContext.http.method.toLowerCase();;
@@ -69,3 +69,18 @@ export const Payment = async (event: APIGatewayProxyEventV2) => {
         return ErrorResponse(404, "requested method");
     }
 }
+
+
+
+// {
+//     "firstName" : "nguyen",
+//     "lastName" : "cuong",
+//     "userType" : "SELLER",
+//     "address" : {
+//         "addressLine1" : "Thai Binh",
+//         "addressLine2" : "Ha Noi",
+//         "city" : "Thai Binh",
+//         "postCode" :"10785",
+//         "country" : "Viet Nam"
+//     }
+// }

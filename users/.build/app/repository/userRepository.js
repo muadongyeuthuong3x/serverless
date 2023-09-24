@@ -46,6 +46,31 @@ class UserRepository extends dbOperation_1.DBOperation {
             }
         });
     }
+    updateUser(user_id, firstName, lastName, userType) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const values = [firstName, lastName, userType, user_id];
+            console.log(values);
+            const queryString = "UPDATE users SET first_name = $1, last_name= $2, user_type = $3  WHERE user_id=$4 RETURNING *";
+            const result = yield this.excuteQuery(queryString, values);
+            if (result.rowCount > 0) {
+                return result.rows[0];
+            }
+            throw new Error("error while updateuser !");
+        });
+    }
+    createProfile(user_id, { firstName, lastName, userType, address }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.updateUser(user_id, firstName, lastName, userType);
+            const { addressLine1, addressLine2, city, postCode, country } = address;
+            const values = [user_id, addressLine1, addressLine2, city, postCode, country];
+            const queryString = "INSERT INTO address(user_id , address_line1 ,address_line2,city,post_code, country)  VALUES ($1,$2,$3,$4,$5,$6) RETURNING *";
+            const result = yield this.excuteQuery(queryString, values);
+            if (result.rowCount > 0) {
+                return result.rows[0];
+            }
+            return true;
+        });
+    }
 }
 exports.UserRepository = UserRepository;
 //# sourceMappingURL=userRepository.js.map

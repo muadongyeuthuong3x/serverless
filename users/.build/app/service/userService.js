@@ -28,6 +28,7 @@ const Login_1 = require("../models/dto/Login");
 const errors_1 = require("../utility/errors");
 const password_1 = require("../utility/password");
 const notification_1 = require("../utility/notification");
+const AddressModel_1 = require("../models/AddressModel");
 let UserService = class UserService {
     constructor(repository) {
         this.repository = repository;
@@ -110,6 +111,15 @@ let UserService = class UserService {
     //User profile
     CreateProfile(event) {
         return __awaiter(this, void 0, void 0, function* () {
+            const token = event.headers.authorization;
+            const payload = yield (0, password_1.VerifyToken)(token);
+            if (!payload)
+                return (0, reponse_1.ErrorResponse)(403, "authorization failed");
+            const input = (0, class_transformer_1.plainToClass)(AddressModel_1.ProfileInput, event.body);
+            const error = yield (0, errors_1.AppValidationError)(input);
+            if (error)
+                return (0, reponse_1.ErrorResponse)(404, error);
+            const result = yield this.repository.createProfile(payload.user_id, input);
             return (0, reponse_1.SuccessResponse)({ message: "response from create profile" });
         });
     }

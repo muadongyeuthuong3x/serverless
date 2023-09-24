@@ -8,6 +8,7 @@ import { LoginInput } from '../models/dto/Login';
 import { AppValidationError } from '../utility/errors';
 import { GetHashedPassword, GetSalt, GetToken, ValidatePassword, VerifyToken } from '../utility/password'
 import { GenerateAccessCode, SendVerificationCode } from '../utility/notification';
+import { ProfileInput } from '../models/AddressModel';
 
 
 @autoInjectable()
@@ -67,7 +68,7 @@ export class UserService {
     async GetVerificationToken(event: APIGatewayProxyEventV2) {
         try {
             const token = event.headers.authorization;
-            const payload = await VerifyToken(token);
+            const payload  = await VerifyToken(token) ;
             if(payload){
                 const {code , expiry} = GenerateAccessCode()
                 await this.repository.updateVerificationCode(payload.user_id , code , expiry);
@@ -93,6 +94,14 @@ export class UserService {
 
     //User profile
     async CreateProfile(event: APIGatewayProxyEventV2) {
+        const token = event.headers.authorization;
+        const payload = await VerifyToken(token);
+        if(!payload) return ErrorResponse(403,"authorization failed");
+        const input = plainToClass(ProfileInput , event.body);
+        const error = await AppValidationError(input);
+        if(error)  return ErrorResponse(404, error);
+        const result = await this.repository.createProfile(payload.user_id , input)
+       
         return SuccessResponse({ message: "response from create profile" });
     }
 

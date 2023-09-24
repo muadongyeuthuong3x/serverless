@@ -38,7 +38,7 @@ const Verify = (event) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.Verify = Verify;
-const Profile = (event) => __awaiter(void 0, void 0, void 0, function* () {
+exports.Profile = (0, core_1.default)((event) => {
     const httpMethod = event.requestContext.http.method.toLowerCase();
     if (httpMethod === "post") {
         return service.CreateProfile(event);
@@ -52,8 +52,7 @@ const Profile = (event) => __awaiter(void 0, void 0, void 0, function* () {
     else {
         return (0, reponse_1.ErrorResponse)(404, "requested method");
     }
-});
-exports.Profile = Profile;
+}).use((0, http_json_body_parser_1.default)());
 const Cart = (event) => __awaiter(void 0, void 0, void 0, function* () {
     const httpMethod = event.requestContext.http.method.toLowerCase();
     ;

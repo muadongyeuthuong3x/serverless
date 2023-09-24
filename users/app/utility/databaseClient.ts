@@ -6,6 +6,6 @@ export const DBClient = () => {
     user: "root",
     database: "user_service",
     port : 5432,
-    password:"postgres"
+    password:"root"
   })
 }
