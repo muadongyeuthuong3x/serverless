@@ -50,7 +50,7 @@ exports.Profile = (0, core_1.default)((event) => {
         return service.GetProfile(event);
     }
     else {
-        return (0, reponse_1.ErrorResponse)(404, "requested method");
+        return service.ResponseWithError(event);
     }
 }).use((0, http_json_body_parser_1.default)());
 const Cart = (event) => __awaiter(void 0, void 0, void 0, function* () {
@@ -87,4 +87,16 @@ const Payment = (event) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.Payment = Payment;
+// {
+//     "firstName" : "nguyen",
+//     "lastName" : "cuong",
+//     "userType" : "SELLER",
+//     "address" : {
+//         "addressLine1" : "Thai Binh",
+//         "addressLine2" : "Ha Noi",
+//         "city" : "Thai Binh",
+//         "postCode" :"10785",
+//         "country" : "Viet Nam"
+//     }
+// }
 //# sourceMappingURL=userHandler.js.map

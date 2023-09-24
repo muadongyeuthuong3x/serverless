@@ -1,4 +1,4 @@
-import { ProfileInput } from "app/models/AddressModel";
+import { AddressModel, ProfileInput } from "app/models/AddressModel";
 import { UserModel } from "../models/UserModel";
 import { DBClient } from "../utility/databaseClient";
 import { DBOperation } from "./dbOperation";
@@ -72,6 +72,41 @@ export class UserRepository extends DBOperation {
         if (result.rowCount > 0) {
             return result.rows[0] as UserModel;
         }
-       return true;
+        return true;
+    }
+
+    async getUserProfile(user_id: number) {
+        const profileQuery = "SELECT first_name , last_name , email , phone , user_type, verified FROM users WHERE user_id=$1";
+        const profileValue = [user_id];
+        const result = await this.excuteQuery(profileQuery, profileValue);
+        if (result.rowCount < 1) {
+            throw new Error("user profile no exits");
+        }
+        const userProfile = result.rows[0] as UserModel;
+        const addQuery = "SELECT id ,address_line1 , address_line2, city,post_code,country FROM address WHERE user_id = $1";
+        const valuesQuey = [user_id];
+        const resultProfile = await this.excuteQuery(addQuery, valuesQuey);
+        if (result.rowCount > 0) {
+            userProfile.address = resultProfile.rows as AddressModel[];
+        }
+        return userProfile;
+    }
+
+
+    async updateProfile(user_id: number,
+        {
+            firstName,
+            lastName,
+            userType,
+            address: { addressLine1, addressLine2, city, postCode, country, id }
+        }: ProfileInput) {
+        await this.updateUser(user_id, firstName, lastName, userType);
+        const values = [addressLine1, addressLine2, city, postCode, country, id];
+        const queryString = "UPDATE address SET address_line1 = $1 , address_line2 = $2, city = $3, post_code = $4, country = $5 WHERE id = $6  RETURNING *";
+        const result = await this.excuteQuery(queryString, values)
+        if (result.rowCount < 1) {
+            throw new Error("update user profile error");
+        }
+        return true;
     }
 }

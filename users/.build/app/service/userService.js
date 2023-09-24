@@ -33,6 +33,11 @@ let UserService = class UserService {
     constructor(repository) {
         this.repository = repository;
     }
+    ResponseWithError(event) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return (0, reponse_1.ErrorResponse)(404, "requested method");
+        });
+    }
     CreateUser(event) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -119,18 +124,33 @@ let UserService = class UserService {
             const error = yield (0, errors_1.AppValidationError)(input);
             if (error)
                 return (0, reponse_1.ErrorResponse)(404, error);
-            const result = yield this.repository.createProfile(payload.user_id, input);
+            yield this.repository.createProfile(payload.user_id, input);
             return (0, reponse_1.SuccessResponse)({ message: "response from create profile" });
         });
     }
     EditProfile(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, reponse_1.SuccessResponse)({ message: "response from edit profile" });
+            const token = event.headers.authorization;
+            const payload = yield (0, password_1.VerifyToken)(token);
+            if (!payload)
+                return (0, reponse_1.ErrorResponse)(403, "authorization failed");
+            const input = (0, class_transformer_1.plainToClass)(AddressModel_1.ProfileInput, event.body);
+            console.log(event.body);
+            const error = yield (0, errors_1.AppValidationError)(input);
+            if (error)
+                return (0, reponse_1.ErrorResponse)(404, error);
+            yield this.repository.updateProfile(payload.user_id, input);
+            return (0, reponse_1.SuccessResponse)({ message: "response from update profile" });
         });
     }
     GetProfile(event) {
         return __awaiter(this, void 0, void 0, function* () {
-            return (0, reponse_1.SuccessResponse)({ message: "response from get profile" });
+            const token = event.headers.authorization;
+            const payload = yield (0, password_1.VerifyToken)(token);
+            if (!payload)
+                return (0, reponse_1.ErrorResponse)(403, "authorization failed");
+            const result = yield this.repository.getUserProfile(payload.user_id);
+            return (0, reponse_1.SuccessResponse)(result);
         });
     }
     // Cart Section

@@ -13,6 +13,9 @@ export class AddressModel {
 
     @Length(2,3)
     country : string;
+
+    @Length(1,)
+    id : number;
 }
 
 export class ProfileInput {

@@ -30,6 +30,10 @@ __decorate([
     (0, class_validator_1.Length)(2, 3),
     __metadata("design:type", String)
 ], AddressModel.prototype, "country", void 0);
+__decorate([
+    (0, class_validator_1.Length)(1),
+    __metadata("design:type", Number)
+], AddressModel.prototype, "id", void 0);
 class ProfileInput {
 }
 exports.ProfileInput = ProfileInput;

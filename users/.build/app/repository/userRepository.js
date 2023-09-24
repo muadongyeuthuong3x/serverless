@@ -71,6 +71,36 @@ class UserRepository extends dbOperation_1.DBOperation {
             return true;
         });
     }
+    getUserProfile(user_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const profileQuery = "SELECT first_name , last_name , email , phone , user_type, verified FROM users WHERE user_id=$1";
+            const profileValue = [user_id];
+            const result = yield this.excuteQuery(profileQuery, profileValue);
+            if (result.rowCount < 1) {
+                throw new Error("user profile no exits");
+            }
+            const userProfile = result.rows[0];
+            const addQuery = "SELECT id ,address_line1 , address_line2, city,post_code,country FROM address WHERE user_id = $1";
+            const valuesQuey = [user_id];
+            const resultProfile = yield this.excuteQuery(addQuery, valuesQuey);
+            if (result.rowCount > 0) {
+                userProfile.address = resultProfile.rows;
+            }
+            return userProfile;
+        });
+    }
+    updateProfile(user_id, { firstName, lastName, userType, address: { addressLine1, addressLine2, city, postCode, country, id } }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.updateUser(user_id, firstName, lastName, userType);
+            const values = [addressLine1, addressLine2, city, postCode, country, id];
+            const queryString = "UPDATE address SET address_line1 = $1 , address_line2 = $2, city = $3, post_code = $4, country = $5 WHERE id = $6  RETURNING *";
+            const result = yield this.excuteQuery(queryString, values);
+            if (result.rowCount < 1) {
+                throw new Error("update user profile error");
+            }
+            return true;
+        });
+    }
 }
 exports.UserRepository = UserRepository;
 //# sourceMappingURL=userRepository.js.map

@@ -39,7 +39,7 @@ export const Profile = middy((event: APIGatewayProxyEventV2) => {
     } else if (httpMethod === "get") {
         return service.GetProfile(event)
     } else {
-        return ErrorResponse(404, "requested method");
+        return service.ResponseWithError(event)
     }
 }).use(jsonBodyParser())
 
