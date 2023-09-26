@@ -84,3 +84,11 @@ export const Payment = async (event: APIGatewayProxyEventV2) => {
 //         "country" : "Viet Nam"
 //     }
 // }
+
+// {
+//     "email":"cuong22021@gmail.com",
+//     "password": "12345678Aa",
+//     "phone": "+84383387358"
+// }
+
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImN1b25nMjIwMjFAZ21haWwuY29tIiwidXNlcl9pZCI6IjEiLCJwaG9uZSI6Iis4NDM4MzM4NzM1OCIsImlhdCI6MTY5NTYyOTk1NSwiZXhwIjoxNjk2NDkzOTU1fQ.l5mNkQwsWjFbXeOF902xM5CD3U8hbnrzIL9vb0Fj2wM
