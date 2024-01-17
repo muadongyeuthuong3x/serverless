@@ -6,7 +6,7 @@ export  const handler = async(event : APIGatewayEvent , context : Context): Prom
   return {
     statusCode : 200,
     body : JSON.stringify({
-        message: "hello from servies",
+        message: "hello from se2222222rvies",
         path: `${event.path} , ${event.pathParameters}`
     })
   }
